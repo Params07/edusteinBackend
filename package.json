@@ -4,12 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-  "start": "node index.js",
- 
-  "build": "npm run build ",
-  "dev": "nodemon index.js" ,
-  "prestart": "npm run build", 
-  "prod": "npm run build && node index.js" 
+  "start": "node --max_old_space_size=2048 index.js", 
+  "build": "webpack --config webpack.prod.js",
+  "dev": "nodemon index.js",
+  "prestart": "npm run build",
+  "prod": "npm run build && npm start"
 }
 ,
   "author": "",
