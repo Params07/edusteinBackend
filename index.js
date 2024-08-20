@@ -9,7 +9,7 @@ const app = express();
 const multer = require('multer')
 require('dotenv').config();
 const v8 = require('v8');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 const upload = multer({ dest: 'uploads/' });
 app.use(cors({
   origin: '*',
