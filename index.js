@@ -47,7 +47,6 @@ function authenticateAdmin(req, res, next) {
 }
 
 // Routes
-app.use('/bootcamps', authenticateAdmin, require('./routes/bootCampRoutes'));
 app.use('/data', require('./routes/data.js'));
 
 app.use('/registrations', authenticateAdmin, require('./routes/registrationRoutes'));
