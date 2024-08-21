@@ -1,6 +1,6 @@
 const express = require('express');
 const pool = require('../db');
-const { route } = require('./bootcampRoutes');
+
 const router = express.Router();
 
 router.get('/bootcamp', async (req, res) => {

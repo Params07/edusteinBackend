@@ -11,11 +11,11 @@ require('dotenv').config();
 const v8 = require('v8');
 const port = process.env.PORT || 5000;
 const upload = multer({ dest: 'uploads/' });
-app.use(cors({
-  origin: '*',
-  credentials: true,
-}));
-
+const corsOptions = {
+  origin: 'https://66c650556eed050008c86371--clinquant-gumption-c90154.netlify.app',
+  credentials: true, 
+};
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -47,7 +47,7 @@ function authenticateAdmin(req, res, next) {
 }
 
 // Routes
-app.use('/bootcamps', authenticateAdmin, require('./routes/bootcampRoutes'));
+app.use('/bootcamps', authenticateAdmin, require('./routes/bootCampRoutes'));
 app.use('/data', require('./routes/data.js'));
 
 app.use('/registrations', authenticateAdmin, require('./routes/registrationRoutes'));
