@@ -11,10 +11,11 @@ require('dotenv').config();
 const v8 = require('v8');
 const port = process.env.PORT || 8000;
 const upload = multer({ dest: 'uploads/' });
-app.use(cors({
-  origin: '*',
-  credentials: true,
-}));
+const corsOptions = {
+  origin: 'https://66c650556eed050008c86371--clinquant-gumption-c90154.netlify.app',
+  credentials: true, 
+};
+app.use(cors(corsOptions));
 
 
 app.use(bodyParser.json());
