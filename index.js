@@ -3,6 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
+
 const pool = require('./db');
 const { sendEmail } = require('./emailsender');
 const app = express();
@@ -12,7 +14,7 @@ const v8 = require('v8');
 const port = process.env.PORT || 5000;
 const upload = multer({ dest: 'uploads/' });
 const corsOptions = {
-  origin: 'https://66c650556eed050008c86371--clinquant-gumption-c90154.netlify.app',
+  origin: process.env.FRONT_END_URL,
   credentials: true, 
 };
 app.use(cors(corsOptions));
@@ -25,14 +27,18 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'akjdjfhdhfsjkdhfksjhfksj',
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    secure: false,
-    maxAge: 1000 * 60 * 60 * 24
-  }
+  cookie: { maxAge: 86400000 }, 
+    store: new MemoryStore({
+      checkPeriod: 86400000 
+    }),
+    resave: false,
+    saveUninitialized: false, 
+    secret: 'anfkjqefhnkmnoqhdfmdnadjqkldnd', 
+    name: 'sessionId', 
+    secure: process.env.NODE_ENV === 'production', 
+    httpOnly: true, 
 }));
+
 
 const users = {
   admin: { password: 'password123' }
@@ -44,9 +50,11 @@ function authenticateAdmin(req, res, next) {
     return next();
   }
   return res.status(401).send({ message: 'Unauthorized' });
+
 }
 
-// Routes
+
+// Routes        
 app.use('/bootcamps', authenticateAdmin, require('./routes/bootCampRoutes'));
 app.use('/data', require('./routes/data.js'));
 
