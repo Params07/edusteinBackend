@@ -4,13 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "client": "npm start --prefix ../app",
-    "build": "npm run build --prefix ../app",
-    "dev": "concurrently \"nodemon index.js\" \"npm run client\"",
-    "prestart": "npm run build",
-    "prod": "npm run build && node index.js"
+
+    "start": "node index.js"
+    
   },
+
+
   "author": "",
   "license": "ISC",
   "dependencies": {
