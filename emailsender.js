@@ -22,7 +22,6 @@ const sendEmail = async (mailOptions) => {
   } catch (error) {
     console.error('Error sending email:', error);
   } finally {
-    console.log('Cleaning up attachments...',mailOptions.attachments);
     if (mailOptions.attachments && mailOptions.attachments.length > 0) {
       await Promise.all(
         mailOptions.attachments.map(file => {
