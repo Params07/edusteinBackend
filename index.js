@@ -19,8 +19,11 @@
  
   const app = express();
   const port = process.env.PORT || 5000;
-  app.use(express.static(path.join(__dirname,"build")))
 
+
+
+  app.use(express.static(path.join(__dirname,"build")))
+  app.set('trust proxy', 1);
 
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
   app.use(express.json());
