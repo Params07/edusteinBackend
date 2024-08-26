@@ -165,6 +165,7 @@ app.post('/send-email',  upload.array('files'), async (req, res) => {
   if (files && files.length > 0) {
     mailOptions.attachments = files.map(file => ({
       filename: file.originalname,
+      oldfilename:file.filename,
       path: path.join(__dirname, 'uploads', file.filename)
     }));
   }
