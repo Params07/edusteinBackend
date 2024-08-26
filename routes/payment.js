@@ -3,14 +3,57 @@ const express = require('express');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
 const pool = require('../db');
-
+const { sendEmail } = require('../emailsender');
 const router = express.Router();
+
+
+const sendMail =async (to, success) => {
+  const mailOptions = {
+    to: to,
+    subject: success?'Payment Confirmation for EduStein Bootcamp Registration':'Issue with EduStein Bootcamp Registration',
+    html: '',
+  };
+
+  if (success) {
+    mailOptions.html = `
+      <p>Dear Participant,</p>
+      <p>We are pleased to inform you that your payment and registration for the EduStein Bootcamp has been successfully processed.</p>
+     
+      <p>Thank you for registering with us! We look forward to seeing you at the event.</p>
+      <p>Best regards,</p>
+      <p>The EduStein Team</p>
+    `;
+  } else {
+    mailOptions.html = `
+      <p>Dear Participant,</p>
+      <p>We regret to inform you that there was an issue processing your payment for the EduStein Bootcamp registration.</p>
+      <p>Please try again, or contact our support team if you continue to experience issues.</p>
+      <p>If your payment was deducted, the amount will be refunded to your account shortly.</p>
+      <p>Best regards,</p>
+      <p>The EduStein Team</p>
+    `;
+  }
+
+  await sendEmail(mailOptions);
+};
+
+const validateRequest = (req, res, next) => {
+  const { name, email, phone, bootcampId } = req.body;
+
+  if (!name || !email || !phone || !bootcampId) {
+    return res.status(400).json({ error: 'All fields are required: name, email, phone, bootcampId' });
+  }
+
+  
+
+  next();
+};
 const generateReceiptId = () => {
     const now = new Date();
     const timestamp = now.toISOString().replace(/[-:.]/g, ''); 
     return `receipt_${timestamp}`;
   };
-router.post('/freeRegistration',async (req,res)=>{
+router.post('/freeRegistration',validateRequest,async (req,res)=>{
   const {
    
     name,
@@ -29,6 +72,7 @@ const registrationValues = [name, email, phone, bootcampId];
 
 const registrationResult = await pool.query(registrationQuery, registrationValues);
 res.status(201).json({message:'Registration completed!'});
+sendMail(email,true);
 } catch (error) {
   console.error('error occured',error)
   res.status(500).json({ error: 'Registration failed,Try again later' });
@@ -81,7 +125,7 @@ router.post('/orders', async (req, res) => {
   }
 });
 
-router.post('/success', async (req, res) => {
+router.post('/success',validateRequest, async (req, res) => {
     const {
         orderCreationId,
         razorpayPaymentId,
@@ -130,6 +174,7 @@ router.post('/success', async (req, res) => {
         await client.query('COMMIT');
 
         res.status(201).json({message:'Registration completed!'});
+        sendMail(email,true)
     } catch (registrationError) {
         await client.query('ROLLBACK');
         console.error('Error inserting registration:', registrationError);
@@ -154,7 +199,9 @@ router.post('/success', async (req, res) => {
             await client.query(refundQuery, refundValues);
 
             res.status(500).json({ error: 'Registration failed, payment refunded', refund: refundResponse });
+            sendMail(email,false)
         } catch (refundError) {
+          sendMail(email,false)
             console.error('Error issuing refund:', refundError);
             res.status(500).json({ error: 'Registration failed, refund also failed', registrationError, refundError });
         }

@@ -4,7 +4,7 @@ const router = express.Router();
 const { format, endOfMonth, startOfMonth, eachMonthOfInterval, parseISO } = require('date-fns');
 
 router.get('/chartdata', async (req, res) => {
-    const { id, start_date, end_date } = req.query;
+    const { id, start_date, end_date,status } = req.query;
     if (
       id === undefined ||
       start_date === undefined ||
@@ -26,7 +26,7 @@ router.get('/chartdata', async (req, res) => {
   if (!id) {
     return res.status(400).send({ message: "ID is required" });
   } else if (id === 'all') {
-    query += " WHERE rd.created_at >= $1 AND rd.created_at <= $2 ";
+    query += " WHERE rd.created_at >= $1 AND rd.created_at <= $2 AND bc.registration_status = $3";
   } else {
     const bootcampId = Number(id);
    
@@ -34,7 +34,7 @@ router.get('/chartdata', async (req, res) => {
       return res.status(400).send({ message: "Invalid bootcamp ID" });
     }
 
-    query += " WHERE rd.bootcamp_id = $1 AND rd.created_at >= $2 AND rd.created_at <= $3 ";
+    query += " WHERE rd.bootcamp_id = $1 AND rd.created_at >= $2 AND rd.created_at <= $3 AND bc.registration_status = $4 ";
     queryParams.push(bootcampId);
   }
 
@@ -42,17 +42,18 @@ router.get('/chartdata', async (req, res) => {
     GROUP BY month
     ORDER BY month DESC
   `;
+  
 
   try {
     const formattedStartDate = format(new Date(start_date), 'yyyy-MM-dd');
     const formattedEndDate = endOfMonth(new Date(end_date),'yyyy-MM-dd');
 
    
-      queryParams.push(formattedStartDate, formattedEndDate);
+      queryParams.push(formattedStartDate, formattedEndDate,status === 'active');
  
 
     const result = await pool.query(query, queryParams);
-
+    
    
    
     
@@ -71,7 +72,7 @@ router.get('/chartdata', async (req, res) => {
   }
  });
  router.get('/piechartdata', async (req, res) => {
-  const { start_date, end_date } = req.query;
+  const { start_date, end_date,status } = req.query;
   if (
    
     start_date === undefined ||
@@ -84,7 +85,7 @@ router.get('/chartdata', async (req, res) => {
   
 let query = `
   select bc.title as name , COUNT(rd.id) as value from registrations as rd join bootcamps as bc on rd.bootcamp_id = bc.id 
-  WHERE rd.created_at >= $1 AND rd.created_at <= $2
+  WHERE rd.created_at >= $1 AND rd.created_at <= $2 AND  bc.registration_status = $3
    group by bc.id
 `;
 let queryParams = [];
@@ -94,7 +95,7 @@ let queryParams = [];
 try {
   const formattedStartDate = format(new Date(start_date), 'yyyy-MM-dd');
   const formattedEndDate = endOfMonth(new Date(end_date),'yyyy-MM-dd');
-    queryParams.push(formattedStartDate, formattedEndDate);
+    queryParams.push(formattedStartDate, formattedEndDate,status === 'active');
     const result = await pool.query(query, queryParams);
    res.status(200).send(result.rows);
 } catch (error) {
@@ -108,7 +109,7 @@ try {
 
  
  router.get('/registration', async (req, res) => {
-  const {id,start_date,end_date } = req.query;
+  const {id,start_date,end_date ,status} = req.query;
   if (
     id === undefined ||
     start_date === undefined ||
@@ -119,13 +120,13 @@ try {
     return res.status(400).send({ message: "Invalid query parameters" });
   }
    console.log()
-   let query = "SELECT COUNT(*) AS tot FROM registrations ";
+   let query = "SELECT COUNT(*) AS tot FROM registrations as rd join bootcamps as bc on bc.id = rd.bootcamp_id  ";
    let queryParams = [];
  
    if (!id) {
      return res.status(400).send({ message: "ID is required" });
    } else if (id === 'all') {
-     query += "WHERE created_at >= $1 AND created_at <= $2";
+     query += "WHERE created_at >= $1 AND created_at <= $2  AND bc.registration_status = $3 ";
      queryParams.push(format(new Date(start_date), 'yyyy-MM-dd'));
      queryParams.push(format(endOfMonth(new Date(end_date)), 'yyyy-MM-dd'));
    } else {
@@ -134,11 +135,12 @@ try {
        return res.status(400).send({ message: "Invalid bootcamp ID" });
      }
  
-     query += "WHERE bootcamp_id = $1 AND created_at >= $2 AND created_at <= $3";
+     query += "WHERE bootcamp_id = $1 AND created_at >= $2 AND created_at <= $3 AND bc.registration_status = $4 ";
      queryParams.push(bootcampId);
      queryParams.push(format(new Date(start_date), 'yyyy-MM-dd'));
      queryParams.push(format(endOfMonth(new Date(end_date)), 'yyyy-MM-dd'));
    }
+   queryParams.push(status === 'active')
  
    try {
      const result = await pool.query(query, queryParams);

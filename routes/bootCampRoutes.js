@@ -55,6 +55,7 @@ router.post('/addBootcamp', upload.none(), async (req, res) => {
 });
 
 router.get('/bootcamp', async (req, res) => {
+  
    const {id} = req.query;
    console.log(id)
    if (id == null || id == undefined ){
@@ -66,9 +67,10 @@ router.get('/bootcamp', async (req, res) => {
     params.push(id);
     query="SELECT * FROM bootcamps WHERE id = $1 "
   }
- 
+  console.log(query)
   try {
     const result = await pool.query(query,params);
+    console.log(result.rows)
     res.status(200).json(result.rows);
   } catch (error) {
     console.error('Error fetching data from the database:', error);
