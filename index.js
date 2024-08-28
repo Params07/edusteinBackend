@@ -21,6 +21,13 @@
   const port = process.env.PORT || 5000;
 
 
+  if (process.env.NODE_ENV !== 'production') {
+    const corsOptions = {
+      origin: ['http://localhost:3000', 'https://edustein007.netlify.app'],
+      credentials: true,
+    };
+    app.use(cors(corsOptions));
+  }
 
   app.use(express.static(path.join(__dirname,"build")))
   app.set('trust proxy', 1);
