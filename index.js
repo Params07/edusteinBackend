@@ -11,11 +11,11 @@
   const { body, validationResult } = require('express-validator');
   const winston = require('winston');
   require('dotenv').config();
-  const pool = require('../db.js');
-  const { sendEmail } = require('../emailsender.js');
+  const pool = require('./db.js');
+  const { sendEmail } = require('./emailsender.js');
   
-  const jobAssigner = require('../schedular/jobs.js')
-  const bootcampStatus = require('../schedular/bootcampStatus.js');
+  const jobAssigner = require('./schedular/jobs.js')
+  const bootcampStatus = require('./schedular/bootcampStatus.js');
  
   const app = express();
   const port = process.env.PORT || 5000;
@@ -105,14 +105,14 @@
   }
 
   // Routes
-  app.use('/bootcamps', authenticateAdmin, require('../routes/bootCampRoutes.js'));
-  app.use('/data', require('../routes/data.js'));
-  app.use('/registrations', authenticateAdmin, require('../routes/registrationRoutes.js'));
-  app.use("/payment", require("../routes/payment.js"));
-  app.use('/createExcel',authenticateAdmin, require('../creatingExcel.js'));
-  app.use('/transaction', authenticateAdmin, require('../routes/transactionData.js'));
-  app.use('/dashboard', authenticateAdmin, require('../routes/dashboardData.js'));
-  app.use('/refundInitiator',authenticateAdmin,require('../routes/refundInitiator.js'));
+  app.use('/bootcamps', authenticateAdmin, require('./routes/bootCampRoutes.js'));
+  app.use('/data', require('./routes/data.js'));
+  app.use('/registrations', authenticateAdmin, require('./routes/registrationRoutes.js'));
+  app.use("/payment", require("./routes/payment.js"));
+  app.use('/createExcel',authenticateAdmin, require('./creatingExcel.js'));
+  app.use('/transaction', authenticateAdmin, require('./routes/transactionData.js'));
+  app.use('/dashboard', authenticateAdmin, require('./routes/dashboardData.js'));
+  app.use('/refundInitiator',authenticateAdmin,require('./routes/refundInitiator.js'));
   app.post('/login', loginLimiter, 
     body('username').isString().trim().notEmpty(),
     body('password').isString().trim().notEmpty(),
