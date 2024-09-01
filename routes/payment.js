@@ -7,18 +7,18 @@ const { sendEmail } = require('../emailsender');
 const router = express.Router();
 
 
-const sendMail =async (to, success) => {
+const sendMail =async (emailData) => {
   const mailOptions = {
-    to: to,
-    subject: success?'Payment Confirmation for EduStein Bootcamp Registration':'Issue with EduStein Bootcamp Registration',
+    to: emailData.email,
+    subject: emailData.status?'Payment Confirmation for EduStein Bootcamp Registration':'Issue with EduStein Bootcamp Registration',
     html: '',
   };
 
-  if (success) {
+  if (emailData.status) {
     mailOptions.html = `
       <p>Dear Participant,</p>
       <p>We are pleased to inform you that your payment and registration for the EduStein Bootcamp has been successfully processed.</p>
-     
+      <p> Your Payment id is ${emailData.razorpayPaymentId} </p>
       <p>Thank you for registering with us! We look forward to seeing you at the event.</p>
       <p>Best regards,</p>
       <p>The EduStein Team</p>
@@ -27,8 +27,9 @@ const sendMail =async (to, success) => {
     mailOptions.html = `
       <p>Dear Participant,</p>
       <p>We regret to inform you that there was an issue processing your payment for the EduStein Bootcamp registration.</p>
-      <p>Please try again, or contact our support team if you continue to experience issues.</p>
-      <p>If your payment was deducted, the amount will be refunded to your account shortly.</p>
+      
+      <p>Your refund process has been intiated </p>
+      <p> you can track your refund status using this payment id ${emailData.razorpayPaymentId} in razorpay website
       <p>Best regards,</p>
       <p>The EduStein Team</p>
     `;
@@ -138,7 +139,10 @@ router.post('/success',validateRequest, async (req, res) => {
     } = req.body;
 
     const client = await pool.connect();
-
+    const emailData = {};
+    emailData.email = email;
+    emailData.razorpayPaymentId = razorpayPaymentId;
+    
     try {
         await client.query('BEGIN');
 
@@ -174,7 +178,7 @@ router.post('/success',validateRequest, async (req, res) => {
         await client.query('COMMIT');
 
         res.status(201).json({message:'Registration completed!'});
-        sendMail(email,true)
+        emailData.status = true
     } catch (registrationError) {
         await client.query('ROLLBACK');
         console.error('Error inserting registration:', registrationError);
@@ -199,13 +203,14 @@ router.post('/success',validateRequest, async (req, res) => {
             await client.query(refundQuery, refundValues);
 
             res.status(500).json({ error: 'Registration failed, payment refunded', refund: refundResponse });
-            sendMail(email,false)
+            emailData.status = false
         } catch (refundError) {
-          sendMail(email,false)
+         
             console.error('Error issuing refund:', refundError);
             res.status(500).json({ error: 'Registration failed, refund also failed', registrationError, refundError });
         }
     } finally {
+      sendMail(emailData)
         client.release();
     }
 });

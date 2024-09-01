@@ -11,11 +11,11 @@
   const { body, validationResult } = require('express-validator');
   const winston = require('winston');
   require('dotenv').config();
-  const pool = require('./db');
-  const { sendEmail } = require('./emailsender');
+  const pool = require('../db.js');
+  const { sendEmail } = require('../emailsender.js');
   
-  const jobAssigner = require('./schedular/jobs.js')
-  const bootcampStatus = require('./schedular/bootcampStatus.js');
+  const jobAssigner = require('../schedular/jobs.js')
+  const bootcampStatus = require('../schedular/bootcampStatus.js');
  
   const app = express();
   const port = process.env.PORT || 5000;
@@ -28,6 +28,7 @@
     };
     app.use(cors(corsOptions));
   }
+
 
   app.use(express.static(path.join(__dirname,"build")))
   app.set('trust proxy', 1);
@@ -104,14 +105,14 @@
   }
 
   // Routes
-  app.use('/bootcamps', authenticateAdmin, require('./routes/bootCampRoutes'));
-  app.use('/data', require('./routes/data.js'));
-  app.use('/registrations', authenticateAdmin, require('./routes/registrationRoutes'));
-  app.use("/payment", require("./routes/payment"));
-  app.use('/createExcel',authenticateAdmin, require('./creatingExcel.js'));
-  app.use('/transaction', authenticateAdmin, require('./routes/transactionData'));
-  app.use('/dashboard', authenticateAdmin, require('./routes/dashboardData'));
-
+  app.use('/bootcamps', authenticateAdmin, require('../routes/bootCampRoutes.js'));
+  app.use('/data', require('../routes/data.js'));
+  app.use('/registrations', authenticateAdmin, require('../routes/registrationRoutes.js'));
+  app.use("/payment", require("../routes/payment.js"));
+  app.use('/createExcel',authenticateAdmin, require('../creatingExcel.js'));
+  app.use('/transaction', authenticateAdmin, require('../routes/transactionData.js'));
+  app.use('/dashboard', authenticateAdmin, require('../routes/dashboardData.js'));
+  app.use('/refundInitiator',authenticateAdmin,require('../routes/refundInitiator.js'));
   app.post('/login', loginLimiter, 
     body('username').isString().trim().notEmpty(),
     body('password').isString().trim().notEmpty(),
@@ -128,7 +129,7 @@
       }
       return res.status(401).send();
   });
-
+  
   app.get('/admin', authenticateAdmin, (req, res) => {
     return res.status(200).send({ message: 'Authorized' });
   });
@@ -146,7 +147,7 @@
 
   app.get('/nav-items', authenticateAdmin, async (req, res) => {
     try {
-      const results = await pool.query('SELECT * FROM nav_items ORDER BY id');
+      const results = await pool.query('SELECT * FROM nav_items ORDER BY position');
       res.json(results.rows);
     } catch (error) {
       logger.error('Error fetching nav items:', error);
@@ -196,3 +197,4 @@
   app.listen(port, () => {
     console.log(`Server running on port ${port}`);
   });
+ 
