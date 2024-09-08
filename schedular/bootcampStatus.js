@@ -1,4 +1,4 @@
-const pool = require('../db');
+const {pool} = require('../db');
 
 const bootcampStatus = async () => {
     try {
@@ -10,4 +10,3 @@ const bootcampStatus = async () => {
 };
 
 module.exports = bootcampStatus;
-

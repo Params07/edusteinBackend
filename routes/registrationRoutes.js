@@ -1,6 +1,6 @@
 
 const express = require('express');
-const pool = require('../db');
+const {pool} = require('../db');
 const { format } = require('date-fns');
 const router = express.Router();
 

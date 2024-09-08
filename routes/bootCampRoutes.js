@@ -4,7 +4,7 @@ const multer = require('multer');
 
 const path = require('path');
 const fs = require('fs');
-const pool = require('../db');
+const {pool} = require('../db');
 const router = express.Router();
 const upload = multer();
 

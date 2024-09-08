@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('../db');
+const {pool} = require('../db');
 const router = express.Router();
 const { format, endOfMonth, startOfMonth, eachMonthOfInterval, parseISO } = require('date-fns');
 

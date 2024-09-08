@@ -1,5 +1,5 @@
 const express = require('express');
-const pool = require('../db');
+const {pool} = require('../db');
 const multer = require('multer');
 const upload = multer();
 const { body, validationResult } = require('express-validator');

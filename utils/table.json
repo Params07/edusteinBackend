@@ -1,0 +1,240 @@
+{
+    "Bootcamps": {
+      "fields": {
+        "id": {
+          "type": "INTEGER",
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        "title": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "start_date": {
+          "type": "DATE",
+          "allowNull": false
+        },
+        "end_date": {
+          "type": "DATE",
+          "allowNull": false
+        },
+        "additional_info": {
+          "type": "TEXT",
+          "allowNull": true
+        },
+        "image_path": {
+          "type": "STRING",
+          "allowNull": true
+        },
+        "amount": {
+          "type": "INTEGER",
+          "allowNull": false
+        },
+        "registration_status": {
+          "type": "BOOLEAN",
+          "allowNull": false,
+          "defaultValue": true
+        }
+      },
+      "options": {
+        "indexes": [
+          {
+            "name": "bootcamps_pkey",
+            "unique": true,
+            "fields": ["id"]
+          }
+        ]
+      }
+    },
+    "NavItems": {
+      "fields": {
+        "id": {
+          "type": "INTEGER",
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        "label": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "component_path": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "position": {
+          "type": "INTEGER",
+          "allowNull": false,
+          "defaultValue": 0
+        }
+      },
+      "options": {
+        "indexes": [
+          {
+            "name": "nav_items_pkey",
+            "unique": true,
+            "fields": ["id"]
+          }
+        ]
+      }
+    },
+    "PaymentDetails": {
+      "fields": {
+        "id": {
+          "type": "INTEGER",
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        "orderid": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "paymentid": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "signature": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "success": {
+          "type": "BOOLEAN",
+          "allowNull": false
+        }
+      },
+      "options": {
+        "indexes": [
+          {
+            "name": "paymentdetails_pkey",
+            "unique": true,
+            "fields": ["id"]
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "fk_paymentdetails_registrations",
+            "field": "id",
+            "references": {
+              "model": "Registrations",
+              "key": "id"
+            },
+            "onDelete": "CASCADE"
+          }
+        ]
+      }
+    },
+    "Refunds": {
+      "fields": {
+        "id": {
+          "type": "INTEGER",
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        "payment_id": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "refund_id": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "amount": {
+          "type": "INTEGER",
+          "allowNull": false
+        },
+        "status": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "created_at": {
+          "type": "DATE",
+          "allowNull": false,
+          "defaultValue": "NOW"
+        },
+        "updated_at": {
+          "type": "DATE",
+          "allowNull": false,
+          "defaultValue": "NOW"
+        },
+        "email": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "phone": {
+          "type": "STRING",
+          "allowNull": false
+        }
+      },
+      "options": {
+        "indexes": [
+          {
+            "name": "refunds_pkey",
+            "unique": true,
+            "fields": ["id"]
+          }
+        ],
+        "triggers": [
+          {
+            "name": "trigger_update_refund_timestamp",
+            "beforeUpdate": true,
+            "function": "update_refund_timestamp"
+          }
+        ]
+      }
+    },
+    "Registrations": {
+      "fields": {
+        "id": {
+          "type": "INTEGER",
+          "allowNull": false,
+          "primaryKey": true,
+          "autoIncrement": true
+        },
+        "name": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "email": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "phone": {
+          "type": "STRING",
+          "allowNull": false
+        },
+        "bootcamp_id": {
+          "type": "INTEGER",
+          "allowNull": false
+        },
+        "created_at": {
+          "type": "DATE",
+          "allowNull": false,
+          "defaultValue": "NOW"
+        }
+      },
+      "options": {
+        "indexes": [
+          {
+            "name": "registrations_pkey",
+            "unique": true,
+            "fields": ["id"]
+          }
+        ],
+        "foreignKeys": [
+          {
+            "name": "fk_bootcamp",
+            "field": "bootcamp_id",
+            "references": {
+              "model": "Bootcamps",
+              "key": "id"
+            },
+            "onDelete": "CASCADE"
+          }
+        ]
+      }
+    }
+  }
+  

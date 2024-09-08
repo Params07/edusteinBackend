@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
-const pool = require('../db');
+const {pool} = require('../db');
 const { sendEmail } = require('../emailsender');
 const router = express.Router();
 

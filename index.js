@@ -11,9 +11,9 @@
   const { body, validationResult } = require('express-validator');
   const winston = require('winston');
   require('dotenv').config();
-  const pool = require('./db.js');
+  const {pool} = require('./db.js');
   const { sendEmail } = require('./emailsender.js');
-  
+  const {createTable} = require('./utils/createingTables.js')
   const jobAssigner = require('./schedular/jobs.js')
   const bootcampStatus = require('./schedular/bootcampStatus.js');
  
@@ -95,7 +95,7 @@
     },
   });
 
-
+   createTable();
 
   function authenticateAdmin(req, res, next) {
     if (req.session && req.session.user) {
