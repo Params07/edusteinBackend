@@ -195,6 +195,6 @@
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
   }); 
   app.listen(port, () => {
-    console.log(`Server running on por ${port}`);
+    console.log(`Serv running on por ${port}`);
   });
  
