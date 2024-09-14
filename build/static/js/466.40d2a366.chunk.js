@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkapp=self.webpackChunkapp||[]).push([[466],{92466:(e,r,t)=>{t.r(r),t.d(r,{default:()=>s});var o=t(65043),a=t(49613),c=t(73216),n=t(70579);const s=()=>{const{logout:e}=(0,a.A)(),r=(0,c.Zp)();return(0,o.useEffect)((()=>{(async()=>{try{(await fetch("/logout",{method:"POST",credentials:"include"})).ok&&(e(),r("/Login"))}catch(t){console.error("Login failed:",t),alert("An error occurred. Please try again.")}})()}),[]),(0,n.jsx)("div",{children:"Logout"})}}}]);
-//# sourceMappingURL=466.40d2a366.chunk.js.map
