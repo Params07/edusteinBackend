@@ -6,13 +6,10 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
   protocol: 'postgres',
   logging: false,  
-  ssl: {
-    rejectUnauthorized: false, 
-  },
+ 
   dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false, 
+    dialectOptions: {
+      ssl: false, 
     }
   }
 });
@@ -29,8 +26,6 @@ sequelize.authenticate()
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  }
+  ssl: false,
 });
  module.exports ={pool,sequelize};

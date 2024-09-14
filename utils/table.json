@@ -1,5 +1,5 @@
 {
-    "Bootcamps": {
+    "bootcamps": {
       "fields": {
         "id": {
           "type": "INTEGER",
@@ -47,7 +47,7 @@
         ]
       }
     },
-    "NavItems": {
+    "nav_items": {
       "fields": {
         "id": {
           "type": "INTEGER",
@@ -79,7 +79,7 @@
         ]
       }
     },
-    "PaymentDetails": {
+    "paymentdetails": {
       "fields": {
         "id": {
           "type": "INTEGER",
@@ -125,7 +125,7 @@
         ]
       }
     },
-    "Refunds": {
+    "refunds": {
       "fields": {
         "id": {
           "type": "INTEGER",
@@ -185,7 +185,7 @@
         ]
       }
     },
-    "Registrations": {
+    "registrations": {
       "fields": {
         "id": {
           "type": "INTEGER",
