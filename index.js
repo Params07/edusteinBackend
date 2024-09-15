@@ -16,6 +16,7 @@
   const {createTable} = require('./utils/createingTables.js')
   const jobAssigner = require('./schedular/jobs.js')
   const bootcampStatus = require('./schedular/bootcampStatus.js');
+const  isValid  = require('./isValidUser.js');
  
   const app = express();
   const port = process.env.PORT || 5000;
@@ -113,22 +114,42 @@
   app.use('/transaction', authenticateAdmin, require('./routes/transactionData.js'));
   app.use('/dashboard', authenticateAdmin, require('./routes/dashboardData.js'));
   app.use('/refundInitiator',authenticateAdmin,require('./routes/refundInitiator.js'));
-  app.post('/login', loginLimiter, 
-    body('username').isString().trim().notEmpty(),
-    body('password').isString().trim().notEmpty(),
-    (req, res) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
+  
+
+app.post('/login', loginLimiter, 
+  body('username').isString().trim().notEmpty(),
+  body('password').isString().trim().notEmpty(),
+  async (req, res) => { 
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { username, password } = req.body;
+
+    try {
+    
+      const isPasswordValid = await isValid(username, password);
       
-      const { username, password } = req.body;
-      if (process.env.USER_NAME == username && process.env.PASSWORD == password) {
+      if (isPasswordValid && process.env.USER_NAME === username) {
+       
         req.session.user = username;
         return res.status(200).send();
       }
-      return res.status(401).send();
-  });
+
+      
+      return res.status(401).send('Invalid credentials');
+      
+    } catch (error) {
+      
+      console.error('Login error:', error);
+      return res.status(500).send('Internal Server Error');
+    }
+  }
+);
+
+     
+  
   
   app.get('/admin', authenticateAdmin, (req, res) => {
     return res.status(200).send({ message: 'Authorized' });
