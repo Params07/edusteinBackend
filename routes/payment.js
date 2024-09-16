@@ -7,10 +7,14 @@ const { sendEmail } = require('../emailsender');
 const router = express.Router();
 
 
-const sendMail =async (emailData) => {
+const sendMail = async (emailData) => {
   const mailOptions = {
     to: emailData.email,
-    subject: emailData.status?'Payment Confirmation for EduStein Bootcamp Registration':'Issue with EduStein Bootcamp Registration',
+    subject: emailData.status 
+      ? 'Payment Confirmation for EduStein Bootcamp Registration' 
+      : emailData.refundFailed 
+      ? 'Refund Issue for EduStein Bootcamp Registration' 
+      : 'Issue with EduStein Bootcamp Registration',
     html: '',
   };
 
@@ -18,8 +22,16 @@ const sendMail =async (emailData) => {
     mailOptions.html = `
       <p>Dear Participant,</p>
       <p>We are pleased to inform you that your payment and registration for the EduStein Bootcamp has been successfully processed.</p>
-      <p> Your Payment id is ${emailData.razorpayPaymentId} </p>
+      <p>Your Payment id is ${emailData.razorpayPaymentId}.</p>
       <p>Thank you for registering with us! We look forward to seeing you at the event.</p>
+      <p>Best regards,</p>
+      <p>The EduStein Team</p>
+    `;
+  } else if (emailData.refundFailed) {
+    mailOptions.html = `
+      <p>Dear Participant,</p>
+      <p>We regret to inform you that there was an issue processing the refund for your EduStein Bootcamp registration.</p>
+      <p>Please contact EduStein support with your payment ID ${emailData.razorpayPaymentId} for assistance with your refund.</p>
       <p>Best regards,</p>
       <p>The EduStein Team</p>
     `;
@@ -27,9 +39,8 @@ const sendMail =async (emailData) => {
     mailOptions.html = `
       <p>Dear Participant,</p>
       <p>We regret to inform you that there was an issue processing your payment for the EduStein Bootcamp registration.</p>
-      
-      <p>Your refund process has been intiated </p>
-      <p> you can track your refund status using this payment id ${emailData.razorpayPaymentId} in razorpay website
+      <p>Your refund process has been initiated.</p>
+      <p>You can track your refund status using this payment ID ${emailData.razorpayPaymentId} on the Razorpay website.</p>
       <p>Best regards,</p>
       <p>The EduStein Team</p>
     `;
@@ -37,6 +48,7 @@ const sendMail =async (emailData) => {
 
   await sendEmail(mailOptions);
 };
+
 
 const validateRequest = (req, res, next) => {
   const { name, email, phone, bootcampId } = req.body;
@@ -205,7 +217,8 @@ router.post('/success',validateRequest, async (req, res) => {
             res.status(500).json({ error: 'Registration failed, payment refunded', refund: refundResponse });
             emailData.status = false
         } catch (refundError) {
-         
+          emailData.status = false;
+          emailData.refundFailed = true;
             console.error('Error issuing refund:', refundError);
             res.status(500).json({ error: 'Registration failed, refund also failed', registrationError, refundError });
         }
