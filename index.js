@@ -17,6 +17,7 @@
   const jobAssigner = require('./schedular/jobs.js')
   const bootcampStatus = require('./schedular/bootcampStatus.js');
 const  isValid  = require('./isValidUser.js');
+
  
   const app = express();
   const port = process.env.PORT || 5000;
@@ -28,9 +29,12 @@ const  isValid  = require('./isValidUser.js');
       credentials: true,
     };
     app.use(cors(corsOptions));
-  }
+  };
+  
 
 
+
+  
   app.use(express.static(path.join(__dirname,"build")))
   app.set('trust proxy', 1);
 
@@ -47,7 +51,7 @@ const  isValid  = require('./isValidUser.js');
       httpOnly: true
     },
     store: new MemoryStore({
-      checkPeriod: 86400000 
+      checkPeriod: 86400000  
     }),
     resave: false,
     saveUninitialized: true, 
@@ -99,14 +103,17 @@ const  isValid  = require('./isValidUser.js');
    createTable();
 
   function authenticateAdmin(req, res, next) {
-    if (req.session && req.session.user) {
+    
+    if ( req.session.user === process.env.USER_NAME ) {
+      
       return next();
     }
     return res.status(401).send({ message: 'Unauthorized' });
   }
 
-  // Routes
-  app.use('/bootcamps', authenticateAdmin, require('./routes/bootCampRoutes.js'));
+  // Routes localhost:3000/bootcamps
+  try {
+    app.use('/bootcamps', authenticateAdmin, require('./routes/bootCampRoutes.js'));
   app.use('/data', require('./routes/data.js'));
   app.use('/registrations', authenticateAdmin, require('./routes/registrationRoutes.js'));
   app.use("/payment", require("./routes/payment.js"));
@@ -114,9 +121,13 @@ const  isValid  = require('./isValidUser.js');
   app.use('/transaction', authenticateAdmin, require('./routes/transactionData.js'));
   app.use('/dashboard', authenticateAdmin, require('./routes/dashboardData.js'));
   app.use('/refundInitiator',authenticateAdmin,require('./routes/refundInitiator.js'));
+  app.use('/promocode',authenticateAdmin,require('./routes/promocodeRoutes.js'));
+  } catch (error) {
+     console.log(error)
+  }
   
 
-app.post('/login', loginLimiter, 
+app.post('/login',loginLimiter, 
   body('username').isString().trim().notEmpty(),
   body('password').isString().trim().notEmpty(),
   async (req, res) => { 

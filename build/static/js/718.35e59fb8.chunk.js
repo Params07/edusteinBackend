@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkapp=self.webpackChunkapp||[]).push([[718],{67718:(t,a,e)=>{e.r(a),e.d(a,{default:()=>s});var n=e(65043),r=e(86213);const s=t=>{const[a,e]=(0,n.useState)(!1),[s,o]=(0,n.useState)(null);return{post:async a=>{e(!0),o(null);try{const n=a instanceof FormData,s=await r.A.post(t,a,{withCredentials:!0,headers:n?{"Content-Type":"multipart/form-data"}:{"Content-Type":"application/json"}});return e(!1),s.data}catch(n){throw o(n),e(!1),n}},loading:a,error:s}}}}]);
+//# sourceMappingURL=718.35e59fb8.chunk.js.map

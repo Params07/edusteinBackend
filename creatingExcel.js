@@ -18,7 +18,7 @@ router.post('/', async (req, res) => {
         xlsx.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
 
         const fileName = format(new Date(), 'yyyy-MM-dd_HH-mm-ss') + '.xlsx';
-       +
+       
         xlsx.writeFile(workbook, fileName);
 
         res.download(fileName, (err) => {

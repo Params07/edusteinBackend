@@ -16,9 +16,16 @@ const transporter = nodemailer.createTransport({
 
 const sendEmail = async (mailOptions) => {
   mailOptions.from = process.env.gmail_user_name;
+  if (mailOptions.to) {
+    mailOptions.bcc = Array.isArray(mailOptions.to) 
+      ? mailOptions.to.join(', ') 
+      : mailOptions.to;
+    delete mailOptions.to; 
+  }
+ 
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent: %s', info.messageId);
+    
   } catch (error) {
     console.error('Error sending email:', error);
   } finally {

@@ -1,4 +1,5 @@
 const jobAssigner = (start, reapMode, functionName,...args) => {
+    
     if (typeof functionName !== 'function') {
         console.error('Provided functionName is not a valid function.');
         return;
