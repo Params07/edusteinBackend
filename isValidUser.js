@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto'); 
 require('dotenv').config();
 
-const storedBcryptHash = process.env.password;
+const storedBcryptHash = process.env.PASSWORD;
 
 const isValid = async (username, password) => {
     try {
