@@ -3,7 +3,7 @@ const { pool } = require('../db');
 const validator = require('validator');
 
 const getPromocodes = async(email,bootcampId,promocodeId)=>{
-    console.log(bootcampId,email,typeof(promocodeId),promocodeId == null);
+   
     if(promocodeId == null || promocodeId == undefined){
         promocodeId = -1;
     }
