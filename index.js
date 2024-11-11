@@ -25,7 +25,7 @@ const  isValid  = require('./isValidUser.js');
 
   if (process.env.NODE_ENV !== 'production') {
     const corsOptions = {
-      origin: ['http://localhost:3000', 'https://edustein007.netlify.app'],
+      origin: ['http://localhost:3001', 'https://edustein007.netlify.app'],
       credentials: true,
     };
     app.use(cors(corsOptions));

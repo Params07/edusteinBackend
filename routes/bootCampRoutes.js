@@ -16,7 +16,9 @@ router.post('/updateBootcamp', upload.none(),  async (req, res) => {
  
 
   const { id, title, startDate, endDate, additionalInfo, image_path, amount } = req.body;
-  checkNum(id);
+  if(id == null || id == undefined ||  id <=0 || !isNumber(id)){
+    return  res.status(500).send('Could not fulfill the action requested');
+  }
   try {
     await pool.query(
       'UPDATE bootcamps SET title = $1, start_date = $2, end_date = $3, additional_info = $4, image_path = $5, amount = $6  WHERE id = $7',
@@ -31,7 +33,9 @@ router.post('/updateBootcamp', upload.none(),  async (req, res) => {
 
 router.post('/deleteBootcamp', async (req, res) => {
   const { id } = req.body;
-  checkNum(id);
+  if(id == null || id == undefined ||  id <=0 || !isNumber(id)){
+    return  res.status(500).send('Could not fulfill the action requested');
+  }
   try {
     await pool.query('DELETE FROM bootcamps WHERE id = $1', [id]);
     res.send('deleted');
@@ -79,7 +83,9 @@ router.get('/bootcamp', async (req, res) => {
 });
 router.post('/openRegistration', async (req, res) => {
   const { id } = req.body;
-  checkNum(id);
+  if(id == null || id == undefined ||  id <=0 || !isNumber(id)){
+    return  res.status(500).send('Could not fulfill the action requested');
+  }
   try {
     await pool.query('UPDATE bootcamps SET registration_status = true WHERE id = $1', [id]);
     res.status(200).send('Registration opened');
@@ -91,7 +97,9 @@ router.post('/openRegistration', async (req, res) => {
 
 router.post('/closeRegistration', async (req, res) => {
   const { id } = req.body;
-  checkNum(id);
+  if(id == null || id == undefined ||  id <=0 || !isNumber(id)){
+    return  res.status(500).send('Could not fulfill the action requested');
+  }
 
   
   try {
@@ -103,12 +111,7 @@ router.post('/closeRegistration', async (req, res) => {
   }
 });
 
-function checkNum(id){
-  if(id == null || id == undefined ||  id >=0 || !isNumber(id)){
-    return  res.status(500).send('Could not fulfill the action requested');
-  }
-  
-}
+
 
 async function fetchData(query,params,res){
   

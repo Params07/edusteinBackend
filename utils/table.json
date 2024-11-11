@@ -89,7 +89,7 @@
         "type": "INTEGER",
         "allowNull": false,
         "primaryKey": true,
-        "autoIncrement": true
+        "autoIncrement": false
       },
       "orderid": {
         "type": "STRING",

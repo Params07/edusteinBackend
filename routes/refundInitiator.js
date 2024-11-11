@@ -46,6 +46,7 @@ const getData = async(queryParameters)=>{
         const result = await pool.query(getdataQuery,
             queryParams
         );
+        
         return result
        
   
