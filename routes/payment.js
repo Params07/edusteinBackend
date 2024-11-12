@@ -134,11 +134,11 @@ router.post('/orders', async (req, res) => {
         
         if("error" in promocode){
          
-          return res.send(500).send(promocode);
+          return res.status(500).send(promocode);
         }
         const value = ApplyDiscount(promocode[0],result.rows[0].amount);
       
-        options.amount =  value*100;
+        options.amount =  Math.round(value)*100;
         
         if( options.amount == 0){
           return  res.status(201).send({ amount: options.amount, id: id, currency: options.currency });
