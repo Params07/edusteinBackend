@@ -20,7 +20,9 @@ const sendEmail = async (mailOptions) => {
     mailOptions.bcc = Array.isArray(mailOptions.to) 
       ? mailOptions.to.join(', ') 
       : mailOptions.to;
-    delete mailOptions.to; 
+    
+      delete mailOptions.to;
+    
   }
  
   try {

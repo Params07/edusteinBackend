@@ -15,7 +15,7 @@ const sendMail = async (emailData) => {
   const mailOptions = {
     to: emailData.email,
     subject: emailData.status
-      ? 'Registration Completed for Your Upcoming Session on'
+      ? `Registration Completed for Your Upcoming Session on ${emailData.title}`
       : emailData.refundFailed
         ? 'Refund Issue for EduStein Bootcamp Registration'
         : 'Issue with EduStein Bootcamp Registration',
@@ -85,7 +85,7 @@ router.post('/freeRegistration', validateRequest, async (req, res) => {
   
   const emailData = {};
   emailData.title = title;
-  
+  emailData.email = email;
   emailData.status = true;
   emailData.name = name;
   try {
@@ -98,6 +98,7 @@ router.post('/freeRegistration', validateRequest, async (req, res) => {
 
      await pool.query(registrationQuery, registrationValues);
     res.status(201).json({ message: 'Registration completed!' });
+   
     sendMail(emailData, true);
   } catch (error) {
     console.error('error occured', error)
@@ -183,7 +184,7 @@ router.post('/success', validateRequest, async (req, res) => {
   const emailData = {};
   emailData.email = email;
   emailData.title = title;
- 
+  console.log(title)
   emailData.razorpayPaymentId = razorpayPaymentId;
   emailData.name = name;
 

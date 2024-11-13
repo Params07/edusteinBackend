@@ -13,9 +13,8 @@ const mailTemplate = async (mailOptions, expiration_date, promoCode) => {
 
 <p>We hope this message finds you well! Thank you for your interest in our bootcamp programs. We are thrilled to inform you that you have been selected to receive exclusive promo codes that can help you on your learning journey.</p>
 <p>Your Promo Code(s):${promoCode}</p>
-
-  <p>How to Use Your Promo Codes:</p>
-<p>Visit our website: <a href="edustein.in>click her</a></p>
+<p>How to Use Your Promo Codes:</p>
+<p>Visit our website: <a href="edustein.in">click her</a></p>
 <p>Select the course you are interested in.
 Enter your promo code during the checkout process to enjoy your discount!
 Promo Code Validity:</p>
@@ -27,7 +26,7 @@ Promo Code Validity:</p>
 
 <p>Best regards,</p>
 Edustein Team.`
-    await sendEmail(mailOptions);
+await sendEmail(mailOptions);
 }
 router.post('/addNewPromoCode', async (req, res) => {
     const {
