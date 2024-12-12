@@ -15,7 +15,7 @@ const sendMail = async (emailData) => {
   const mailOptions = {
     to: emailData.email,
     subject: emailData.status
-      ? `Registration Completed for Your Upcoming Session on ${emailData.title}`
+      ? `Registration Confirmed for Your Upcoming Session at EduStein: ${emailData.title}`
       : emailData.refundFailed
         ? 'Refund Issue for EduStein Bootcamp Registration'
         : 'Issue with EduStein Bootcamp Registration',
@@ -24,10 +24,12 @@ const sendMail = async (emailData) => {
 
   if (emailData.status) {
     mailOptions.html = `
-      <p>Dear ${emailData.name},</p>
-        <p>Thank you for registering the ${emailData.title} Session with Edustein! We're excited to help you on your career journey.</p>
+      <p>Hi ${emailData.name},</p>
+        <p>Thank you for registering for the ${emailData.title} Session with Edustein! We're excited to help you on your career journey.</p>
         <p>We will share the meeting link for your scheduled session on the session day. Please make yourself available at the scheduled time to make the most out of this opportunity.</p>
-        <p>If you have any questions or need further assistance, feel free to reach out to us at via edustein.in@gmail.com or Message EduStein on WhatsApp https://wa.me/message/2KDSO547CF5WF1.</p>
+        <p>If you have any questions or need further assistance, feel free to:Message us directly on WhatsApp +91 9486115199
+We look forward to connecting with you and helping you achieve your goals!
+</p>
         <p>Looking forward to connecting with you soon!</p>
 
 <p>Thanks,</p>
