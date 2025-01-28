@@ -134,7 +134,7 @@ router.post('/orders', async (req, res) => {
         res.status(201).send({ amount: options.amount, id: bootcampId, currency: options.currency });
       } else {
         const promocode = await getPromocodes(email,bootcampId,promocodeId);
-        console.log(promocode);
+        
         if("error" in promocode){
          
           return res.status(500).send(promocode);
