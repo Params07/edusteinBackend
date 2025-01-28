@@ -134,12 +134,12 @@ router.post('/orders', async (req, res) => {
         res.status(201).send({ amount: options.amount, id: bootcampId, currency: options.currency });
       } else {
         const promocode = await getPromocodes(email,bootcampId,promocodeId);
-        
+        console.log(promocode);
         if("error" in promocode){
          
           return res.status(500).send(promocode);
         }
-        const value = ApplyDiscount(promocode[0],result.rows[0].amount);
+        const value = promocode.length>0 ? ApplyDiscount(promocode[0],result.rows[0].amount):result.rows[0].amount;
       
         options.amount =  Math.round(value)*100;
         
